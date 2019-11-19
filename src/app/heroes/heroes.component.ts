@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Hero } from '../hero'
-import { HEROES } from '../mock-heroes';
 
-// @Component ger metadata för componenten
+import { Hero } from '../hero' 
+import { HeroService } from '../hero.service';
+
+// innehåll @Component ger metadata för componenten
 @Component({
   selector: 'app-heroes',
   templateUrl: './heroes.component.html',
@@ -11,16 +12,30 @@ import { HEROES } from '../mock-heroes';
 
 export class HeroesComponent implements OnInit {
   
-  heroes = HEROES;
   selectedHero: Hero;
+
+  heroes: Hero[];
   
-  constructor() { }
+  constructor(private heroService: HeroService) { }
 
   // lifecycle hook, kallas kort efter comp skapats, bra att lägga init logic här 
-  ngOnInit() { }
+  ngOnInit() { 
+    this.getHeroes();
+  }
 
   onSelect(hero: Hero): void {
     this.selectedHero = hero;
   }
+  
+  // getHeroes(): void {
+  //   //returns the mock heroes, would not work w remote server
+  //   this.heroes = this.heroService.getHeroes();
+  // }
+  //below, critical difference is .subscribe 
+  getHeroes(): void {
+    this.heroService.getHeroes()
+        .subscribe(heroes => this.heroes = heroes);
+  }
+
 
 }
